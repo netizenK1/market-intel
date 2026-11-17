@@ -1,7 +1,8 @@
 -- 001: core types, users/profiles, companies, products, reference geography, data provenance, jobs
 -- See docs/02-database-schema.md
 
-create extension if not exists pgcrypto;
+-- gen_random_uuid() is built into PostgreSQL 13+, no extension needed.
+-- All functions pin search_path to '' and use schema-qualified names (Supabase security advisor).
 
 -- ---------- enums ----------
 create type public.data_class as enum ('verified','observed','estimated','user_provided','mock');
@@ -14,9 +15,9 @@ create type public.user_role as enum ('user','admin');
 
 -- ---------- helpers ----------
 create or replace function public.set_updated_at() returns trigger
-language plpgsql as $$
+language plpgsql set search_path = '' as $$
 begin
-  new.updated_at := now();
+  new.updated_at := pg_catalog.now();
   return new;
 end;
 $$;
@@ -58,7 +59,7 @@ create trigger trg_user_profiles_updated before update on public.user_profiles
 
 -- create a profile automatically for every new auth user
 create or replace function public.handle_new_user() returns trigger
-language plpgsql security definer set search_path = public as $$
+language plpgsql security definer set search_path = '' as $$
 begin
   insert into public.user_profiles (id, full_name, locale)
   values (
@@ -71,10 +72,11 @@ end;
 $$;
 create trigger on_auth_user_created after insert on auth.users
   for each row execute function public.handle_new_user();
+revoke execute on function public.handle_new_user() from public, anon, authenticated;
 
 -- users must not be able to promote themselves to admin
 create or replace function public.prevent_role_change() returns trigger
-language plpgsql as $$
+language plpgsql set search_path = '' as $$
 begin
   if new.role is distinct from old.role and current_user = 'authenticated' then
     raise exception 'role cannot be changed by the user';
