@@ -1,0 +1,32 @@
+# env / secrets
+.env
+.env.*
+!.env.example
+
+# python
+__pycache__/
+*.py[cod]
+.venv/
+*.egg-info/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.hypothesis/
+.coverage
+htmlcov/
+
+# node
+node_modules/
+dist/
+*.tsbuildinfo
+
+# supabase local
+supabase/.branches/
+supabase/.temp/
+
+# os / editors
+.DS_Store
+Thumbs.db
+*.lnk
+.vscode/
+.idea/
