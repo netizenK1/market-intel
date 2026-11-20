@@ -1,0 +1,26 @@
+# Render Blueprint: backend API on the free plan.
+# Render -> New -> Blueprint -> pick this repo. Secrets marked `sync: false` are typed in the Render dashboard.
+services:
+  - type: web
+    name: market-intel-api
+    runtime: python
+    plan: free
+    region: frankfurt
+    rootDir: apps/api
+    buildCommand: pip install .
+    startCommand: uvicorn app.main:app --host 0.0.0.0 --port $PORT --proxy-headers --forwarded-allow-ips="*"
+    healthCheckPath: /v1/health
+    autoDeploy: true
+    envVars:
+      - key: PYTHON_VERSION
+        value: "3.12.8"
+      - key: APP_ENV
+        value: production
+      - key: LOG_LEVEL
+        value: INFO
+      - key: SUPABASE_URL
+        value: https://qcpgmznxtnbqmsyazydw.supabase.co
+      - key: DATABASE_URL
+        sync: false # postgresql+asyncpg://postgres.<ref>:<password>@<pooler-host>:6543/postgres
+      - key: CORS_ORIGINS
+        sync: false # e.g. https://market-intel.pages.dev

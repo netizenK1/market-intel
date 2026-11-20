@@ -222,3 +222,14 @@ def test_db_not_configured_returns_503() -> None:
     r = TestClient(app).get("/v1/products", headers=auth(ALICE))
     assert r.status_code == 503
     assert r.json()["code"] == "DB_NOT_CONFIGURED"
+
+
+def test_ready_reports_missing_database() -> None:
+    settings = Settings(app_env="test", supabase_url=SUPABASE_URL, supabase_jwt_secret=SecretStr(SECRET))
+    app = create_app(settings)
+    app.dependency_overrides[get_settings] = lambda: settings
+    client = TestClient(app)
+    assert client.get("/v1/health").status_code == 200
+    r = client.get("/v1/health/ready")
+    assert r.status_code == 503
+    assert r.json()["code"] == "DB_NOT_CONFIGURED"

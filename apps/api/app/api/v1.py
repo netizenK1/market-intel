@@ -4,10 +4,12 @@ from typing import Annotated
 from uuid import UUID
 
 from fastapi import APIRouter, Depends, Response, status
+from sqlalchemy import text
 
 from .. import __version__
 from ..auth import CurrentUserDep
 from ..config import Settings, get_settings
+from ..db import SessionDep
 from ..errors import AppError, not_found
 from ..repositories import ProductRepoDep, ProfileRepoDep, ReferenceRepoDep
 from ..schemas import Country, Health, Product, ProductCreate, ProductUpdate, Profile, ProfileUpdate
@@ -17,6 +19,13 @@ router = APIRouter(prefix="/v1")
 
 @router.get("/health", response_model=Health, tags=["system"])
 async def health(settings: Annotated[Settings, Depends(get_settings)]) -> Health:
+    return Health(status="ok", env=settings.app_env, version=__version__)
+
+
+@router.get("/health/ready", response_model=Health, tags=["system"])
+async def ready(settings: Annotated[Settings, Depends(get_settings)], session: SessionDep) -> Health:
+    """Readiness: also checks that the database answers (503 DB_NOT_CONFIGURED / 500 if not)."""
+    await session.execute(text("select 1"))
     return Health(status="ok", env=settings.app_env, version=__version__)
 
 
