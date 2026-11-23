@@ -1,7 +1,7 @@
 # Bepul serverga chiqarish (deploy) — qadam-baqadam
 
 Natija:
-- **Sayt (frontend):** Cloudflare Pages — `https://market-intel.pages.dev` (bepul, uxlamaydi)
+- **Sayt (frontend):** Cloudflare Pages — https://market-intel-2i1.pages.dev ✅ ishlayapti (wrangler bilan to‘g‘ridan-to‘g‘ri yuklangan; qayta yuklash: `apps/web` da `npm run build` → `npx wrangler pages deploy dist --project-name market-intel --branch main`)
 - **API (backend):** Render Free — `https://market-intel-api.onrender.com` (bepul, 15 daqiqa ishlatilmasa uxlaydi, birinchi so‘rovda ~1 daqiqada uyg‘onadi)
 - **Baza + login:** Supabase Free — tayyor (`market-intel-dev`)
 
@@ -54,7 +54,7 @@ Hammasi bepul. Hech qayerga karta kiritish shart emas.
    | `VITE_SUPABASE_ANON_KEY` | `sb_publishable_w2P9tmZEqdcEKmNM-rsZfQ_FE9dWSS2` |
    | `VITE_API_BASE_URL` | `https://market-intel-api.onrender.com` |
    | `NODE_VERSION` | `20` |
-5. **Save and Deploy**. 2–3 daqiqada sayt manzili chiqadi (masalan `https://market-intel.pages.dev`). **Manzilni Claude’ga yuboring.**
+5. **Save and Deploy**. 2–3 daqiqada sayt manzili chiqadi (masalan `https://market-intel-2i1.pages.dev`). **Manzilni Claude’ga yuboring.**
 
 ## 4-qadam. Render — API server (7 daqiqa)
 
@@ -64,7 +64,7 @@ Hammasi bepul. Hech qayerga karta kiritish shart emas.
    | Nomi | Qiymat |
    |---|---|
    | `DATABASE_URL` | 2-qadamdagi tayyor qator |
-   | `CORS_ORIGINS` | 3-qadamdagi sayt manzili, masalan `https://market-intel.pages.dev` (oxirida `/` siz) |
+   | `CORS_ORIGINS` | 3-qadamdagi sayt manzili, masalan `https://market-intel-2i1.pages.dev` (oxirida `/` siz) |
 4. **Apply** / **Deploy Blueprint**. 3–5 daqiqa kuting.
 5. Servis manzili: `https://market-intel-api.onrender.com` (boshqacha bo‘lsa — **Claude’ga yuboring**, 3-qadamdagi `VITE_API_BASE_URL` ni o‘zgartiramiz).
 6. Tekshiruv: brauzerda `https://market-intel-api.onrender.com/v1/health/ready` → `{"status":"ok",...}` chiqishi kerak.
@@ -72,9 +72,9 @@ Hammasi bepul. Hech qayerga karta kiritish shart emas.
 ## 5-qadam. Supabase — saytni login’ga tanitish (2 daqiqa)
 
 1. Supabase → **market-intel-dev** → **Authentication** → **URL Configuration**.
-2. **Site URL:** `https://market-intel.pages.dev` (3-qadamdagi manzil)
+2. **Site URL:** `https://market-intel-2i1.pages.dev` (3-qadamdagi manzil)
 3. **Redirect URLs** → **Add URL**:
-   - `https://market-intel.pages.dev/**`
+   - `https://market-intel-2i1.pages.dev/**`
    - `http://localhost:5173/**` (kompyuterda sinash uchun)
 4. **Save**.
 
